@@ -18,7 +18,7 @@ setup(
                                 'Topic :: Internet :: WWW/HTTP',
                             ],
     packages            =   find_packages(exclude='tests'),
-    package_data        =   {'Wappalyzer': ['data/technologies.json']},
+    package_data        =   {'Wappalyzer': ['data/*']},
     install_requires    =   [   'beautifulsoup4',
                                 'lxml',
                                 'requests',
