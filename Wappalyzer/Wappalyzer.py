@@ -108,7 +108,7 @@ class Wappalyzer:
                     tech = json.load(tfile)
                     techs = {**techs, **tech}
                 obj = {'categories': cats, 'technologies': techs}
-                needed_categories = defaultobj['categories'].keys()
+                needed_categories = cats.keys()
                 categories = {}
                 for category_id in needed_categories:
                     categories[category_id] = obj['categories'][str(category_id)]
