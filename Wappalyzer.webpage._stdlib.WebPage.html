@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>Wappalyzer.webpage._stdlib.WebPage : API documentation</title>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="apidocs.css" />
+  </head>
+  <body>
+
+    <nav class="navbar navbar-default">
+      <div class="container">
+        <div class="navbar-header navbar-brand">
+          <a href="https://github.com/chorsley/python-Wappalyzer/">python-Wappalyzer</a>
+          <a href="index.html">API Documentation</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="page-header">
+        <h1 class="class"><code><code><a href="Wappalyzer.html">Wappalyzer</a></code>.<code><a href="Wappalyzer.webpage.html">webpage</a></code>.<code><a href="Wappalyzer.webpage._stdlib.html">_stdlib</a></code>.<code><a href="Wappalyzer.webpage._stdlib.WebPage.html">WebPage</a></code></code></h1>
+        <div id="showPrivate">
+          <button class="btn btn-link" onclick="togglePrivate()">Toggle Private API</button>
+        </div>
+      </div>
+
+      <div class="categoryHeader">
+        class documentation
+      </div>
+
+      <div class="extrasDocstring">
+        <p><code><span class="py-keyword">class</span> <span class="py-defname">WebPage</span>(<a href="Wappalyzer.webpage._common.BaseWebPage.html" title="Wappalyzer.webpage._common.BaseWebPage">BaseWebPage</a>): <a href="https://github.com/chorsley/python-Wappalyzer/tree/8232e1919fa709df573e3b9038ee9dbf38275f91//Wappalyzer/webpage/_stdlib.py#L45">(source)</a></code></p>
+        <p><a href="classIndex.html#Wappalyzer.webpage._stdlib.WebPage">View In Hierarchy</a></p>
+      </div>
+
+      <div class="moduleDocstring">
+        <div>This is an alternative WebPage object that uses only the standard library to parse HTML.
+It does require an extra dependency to parse CSS selectors, though.</div>
+      </div>
+
+      <div id="splitTables">
+        <table class="children sortable" id="id25">
+  
+  <tr class="instancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="#meta">meta</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="method">
+    
+    <td>Method</td>
+    <td><code><a href="#select">select</a></code></td>
+    <td><span>Execute a CSS select and returns results as Tag objects.</span></td>
+  </tr><tr class="method private">
+    
+    <td>Method</td>
+    <td><code><a href="#_parse_html">_parse_html</a></code></td>
+    <td><span>Parse the HTML with HTMLParser to find &lt;script&gt; and &lt;meta&gt; tags.</span></td>
+  </tr><tr class="property private">
+    
+    <td>Property</td>
+    <td><code><a href="#_dom">_dom</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr>
+</table>
+        
+          <p class="inheritedFrom">
+            Inherited from <code><a href="Wappalyzer.webpage._common.BaseWebPage.html">BaseWebPage</a></code>:
+          </p>
+          <table class="children sortable" id="id26">
+  
+  <tr class="basemethod">
+    
+    <td>Method</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#__init__">__init__</a></code></td>
+    <td><span>Initialize a new WebPage object manually.</span></td>
+  </tr><tr class="baseinstancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#url">url</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseinstancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#html">html</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseinstancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#headers">headers</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseinstancevariable">
+    
+    <td>Instance Variable</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#scripts">scripts</a></code></td>
+    <td><span class="undocumented">Undocumented</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    <td>Class Method</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#new_from_url">new_from_url</a></code></td>
+    <td><span>Constructs a new WebPage object for the URL, using the <code><a href="https://requests.readthedocs.io/en/stable/api/#module-requests">requests</a></code> module to fetch the HTML.</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    <td>Class Method</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#new_from_response">new_from_response</a></code></td>
+    <td><span>Constructs a new WebPage object for the response, using the <code>BeautifulSoup</code> module to parse the HTML.</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    <td>Async Class Method</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#new_from_url_async">new_from_url_async</a></code></td>
+    <td><span>Same as new_from_url only Async.</span></td>
+  </tr><tr class="baseclassmethod">
+    
+    <td>Async Class Method</td>
+    <td><code><a href="Wappalyzer.webpage._common.BaseWebPage.html#new_from_response_async">new_from_response_async</a></code></td>
+    <td><span>Constructs a new WebPage object for the response, using the <code>BeautifulSoup</code> module to parse the HTML.</span></td>
+  </tr>
+</table>
+          
+
+          
+      </div>
+
+      <div id="childList">
+
+        <div class="basemethod private">
+  
+  <a name="Wappalyzer.webpage._stdlib.WebPage._parse_html">
+    
+  </a>
+  <a name="_parse_html">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">_parse_html</span>(self):
+    <a class="functionSourceLink" href="https://github.com/chorsley/python-Wappalyzer/tree/8232e1919fa709df573e3b9038ee9dbf38275f91//Wappalyzer/webpage/_stdlib.py#L51">
+      
+      (source)
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <code><a href="Wappalyzer.webpage._common.BaseWebPage.html#_parse_html">Wappalyzer.webpage._common.BaseWebPage._parse_html</a></code></div>
+    
+    <div>Parse the HTML with HTMLParser to find &lt;script&gt; and &lt;meta&gt; tags.</div>
+  </div>
+</div><div class="baseinstancevariable">
+  
+  <a name="Wappalyzer.webpage._stdlib.WebPage.meta">
+    
+  </a>
+  <a name="meta">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-defname">meta</span> =
+    <a class="functionSourceLink" href="https://github.com/chorsley/python-Wappalyzer/tree/8232e1919fa709df573e3b9038ee9dbf38275f91//Wappalyzer/webpage/_stdlib.py#L58">
+      
+      (source)
+    </a>
+  </div>
+  <div class="functionBody">
+    <div class="interfaceinfo">overrides <code><a href="Wappalyzer.webpage._common.BaseWebPage.html#meta">Wappalyzer.webpage._common.BaseWebPage.meta</a></code></div>
+    
+    <div><p class="undocumented">Undocumented</p></div>
+  </div>
+</div><div class="baseproperty private">
+  
+  <a name="Wappalyzer.webpage._stdlib.WebPage._dom">
+    
+  </a>
+  <a name="_dom">
+    
+  </a>
+  <div class="functionHeader">
+    @cached_property<br />
+    <span class="py-defname">_dom</span> =
+    <a class="functionSourceLink" href="https://github.com/chorsley/python-Wappalyzer/tree/8232e1919fa709df573e3b9038ee9dbf38275f91//Wappalyzer/webpage/_stdlib.py#L60">
+      
+      (source)
+    </a>
+  </div>
+  <div class="functionBody">
+    
+    
+    <div><p class="undocumented">Undocumented</p></div> (type: <code><a href="https://docs.python.org/3/library/typing.html#typing.Optional">Optional</a>[minidom.Document]</code>)
+  </div>
+</div><div class="basemethod">
+  
+  <a name="Wappalyzer.webpage._stdlib.WebPage.select">
+    
+  </a>
+  <a name="select">
+    
+  </a>
+  <div class="functionHeader">
+    
+    <span class="py-keyword">def</span> <span class="py-defname">select</span>(self, selector):
+    <a class="functionSourceLink" href="https://github.com/chorsley/python-Wappalyzer/tree/8232e1919fa709df573e3b9038ee9dbf38275f91//Wappalyzer/webpage/_stdlib.py#L70">
+      
+      (source)
+    </a>
+  </div>
+  <div class="docstring functionBody">
+    <div class="interfaceinfo">overrides <code><a href="Wappalyzer.webpage._common.IWebPage.html#select">Wappalyzer.webpage._common.IWebPage.select</a></code></div>
+    
+    <div>Execute a CSS select and returns results as Tag objects.<table class="fieldTable"><tr class="fieldStart"><td class="fieldName">Parameters</td><td class="fieldArg">selector</td><td><span class="undocumented">Undocumented</span> (type: <code><a href="https://docs.python.org/3/library/stdtypes.html#str">str</a></code>)</td></tr><tr class="fieldStart"><td class="fieldName">Returns</td><td colspan="2"><span class="undocumented">Undocumented</span> (type: <code><a href="https://docs.python.org/3/library/typing.html#typing.Iterable">Iterable</a>[<a href="Wappalyzer.webpage._stdlib.Tag.html">Tag</a>]</code>)</td></tr></table></div>
+  </div>
+</div>
+
+      </div>
+      <address>
+        <a href="index.html">API Documentation</a> for <a href="https://github.com/chorsley/python-Wappalyzer/">python-Wappalyzer</a>, generated by <a href="https://github.com/twisted/pydoctor/">pydoctor</a> 21.2.2 at 2023-09-28 15:45:07.
+      </address>
+
+    </div>
+
+    <script src="pydoctor.js" type="text/javascript"></script>
+
+  </body>
+</html>
