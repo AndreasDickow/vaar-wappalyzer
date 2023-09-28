@@ -443,7 +443,7 @@ class Wappalyzer:
             cat_names = self.get_categories(app_name)
             versioned_and_categorised_apps[app_name]["categories"] = cat_names
 
-        return versioned_and_categorised_apps, self._get_implied_technologies(versioned_apps)
+        return versioned_and_categorised_apps
 
     def _sort_app_versions(self, version_a: str, version_b: str) -> int:
         return len(version_a) - len(version_b)
