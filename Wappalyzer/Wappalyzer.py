@@ -28,9 +28,9 @@ class Wappalyzer:
     Python Wappalyzer driver.
 
     Consider the following exemples.
-    
-    Here is how you can use the latest technologies file from AliasIO/wappalyzer repository. 
-    
+
+    Here is how you can use the latest technologies file from AliasIO/wappalyzer repository.
+
     .. python::
 
         from Wappalyzer import Wappalyzer
@@ -42,7 +42,7 @@ class Wappalyzer:
 
 
     Here is how you can custom request and headers arguments:
-    
+
     .. python::
 
         import requests
@@ -55,8 +55,8 @@ class Wappalyzer:
 
     def __init__(self, categories:Dict[str, Any], technologies:Dict[str, Any]):
         """
-        Manually initialize a new Wappalyzer instance. 
-        
+        Manually initialize a new Wappalyzer instance.
+
         You might want to use the factory method: `latest`
 
         :param categories: Map of category ids to names, as in ``technologies.json``.
@@ -68,25 +68,50 @@ class Wappalyzer:
 
         self._confidence_regexp = re.compile(r"(.+)\\;confidence:(\d+)")
 
+    def get_latest_tech_data(self) -> Dict[str, Any]:
+        cats = requests.get('https://github.com/HTTPArchive/wappalyzer/tree/main/src/categories.json').json()
+        techs: Dict[str, Any] = {}
+        for _ in '_abcdefghijklmnopqrstuvwxyz':
+            r = requests.get(f'https://github.com/HTTPArchive/wappalyzer/tree/main/src/technologies/{_}.json')
+            techs = {**techs, **r.json()}
+        obj = {'categories': cats, 'technologies': techs}
+        obj = self.__filter_needed_data(obj)
+        return obj
+
+    def __filter_needed_data(self, data) -> Dict[str, Any]:
+        needed_categories = range(1,75)
+
+        categories = {}
+        for category_id in needed_categories:
+            categories[category_id] = data['categories'][str(category_id)]
+
+        technologies = {}
+        for key in data['technologies']:
+            intersection = set(data['technologies'][key]['cats']).intersection(set(needed_categories))
+            if len(intersection):
+                technologies[key] = data['technologies'][key]
+        obj = {'categories': categories, 'technologies': technologies}
+
+
     @classmethod
     def latest(cls, technologies_file:str=None, update:bool=False) -> 'Wappalyzer':
         """
         Construct a Wappalyzer instance.
-        
-        Use ``update=True`` to download the very latest file from internet. 
-        Do not update if the file has already been updated in the last 24 hours. 
+
+        Use ``update=True`` to download the very latest file from internet.
+        Do not update if the file has already been updated in the last 24 hours.
         *New in version 0.4.0*
 
-        Use ``technologies_file=/some/path/technologies.json`` to load a 
-        custom technologies file. 
-        
+        Use ``technologies_file=/some/path/technologies.json`` to load a
+        custom technologies file.
+
         If no arguments is passed, load the default ``data/technologies.json`` file
         inside the package ressource.
 
         :param technologies_file: File path
-        :param update: Download and use the latest ``technologies.json`` file 
-            from `AliasIO/wappalyzer <https://github.com/AliasIO/wappalyzer>`_ repository.  
-        
+        :param update: Download and use the latest ``technologies.json`` file
+            from `AliasIO/wappalyzer <https://github.com/AliasIO/wappalyzer>`_ repository.
+
         """
         default=pkg_resources.resource_string(__name__, "data/technologies.json")
         defaultobj = json.loads(default)
@@ -107,17 +132,35 @@ class Wappalyzer:
             # Get the lastest file
             if should_update:
                 try:
-                    lastest_technologies_file=requests.get('https://raw.githubusercontent.com/AliasIO/wappalyzer/master/src/technologies.json')
-                    obj = lastest_technologies_file.json()
+                    cats = requests.get('https://github.com/HTTPArchive/wappalyzer/tree/main/src/categories.json').json()
+                    techs: Dict[str, Any] = {}
+                    for _ in '_abcdefghijklmnopqrstuvwxyz':
+                        r = requests.get(f'https://github.com/HTTPArchive/wappalyzer/tree/main/src/technologies/{_}.json')
+                        techs = {**techs, **r.json()}
+                    obj = {'categories': cats, 'technologies': techs}
+                    needed_categories = range(1,75)
+
+                    categories = {}
+                    for category_id in needed_categories:
+                        categories[category_id] = obj['categories'][str(category_id)]
+
+                    technologies = {}
+                    for key in obj['technologies']:
+                        intersection = set(obj['technologies'][key]['cats']).intersection(set(needed_categories))
+                        if len(intersection):
+                            technologies[key] = obj['technologies'][key]
+                    obj = {'categories': categories, 'technologies': technologies}
+
+
                     _technologies_file = pathlib.Path(cls._find_files(
                         ['HOME', 'APPDATA',],
                         ['.python-Wappalyzer/technologies.json'],
                         create = True
                         ).pop())
-                    
+
                     if obj != defaultobj:
                         with _technologies_file.open('w', encoding='utf-8') as tfile:
-                            tfile.write(lastest_technologies_file.text)
+                            tfile.write(json.dumps(obj, indent=2))
                         logger.info("python-Wappalyzer technologies.json file updated")
 
                 except Exception as err: # Or loads default
@@ -132,7 +175,7 @@ class Wappalyzer:
         else:
             obj = defaultobj
 
-        
+
         return cls(categories=obj['categories'], technologies=obj['technologies'])
 
     @staticmethod
@@ -215,7 +258,7 @@ class Wappalyzer:
                 has_tech = True
         # analyze dom patterns
         # css selector, list of css selectors, or dict from css selector to dict with some of keys:
-        #           - "exists": "": only check if the selector matches somthing, equivalent to the list form. 
+        #           - "exists": "": only check if the selector matches somthing, equivalent to the list form.
         #           - "text": "regex": check if the .innerText property of the element that matches the css selector matches the regex (with version extraction).
         #           - "attributes": {dict from attr name to regex}: check if the attribute value of the element that matches the css selector matches the regex (with version extraction).
         for selector in tech_fingerprint.dom:
@@ -239,10 +282,10 @@ class Wappalyzer:
         return has_tech
 
     def _set_detected_app(self, url:str,
-                                tech_fingerprint: Fingerprint, 
-                                app_type:str, 
-                                pattern: Pattern, 
-                                value:str, 
+                                tech_fingerprint: Fingerprint,
+                                app_type:str,
+                                pattern: Pattern,
+                                value:str,
                                 key='') -> None:
         """
         Store detected technology to the detected_technologies dict.
@@ -257,7 +300,7 @@ class Wappalyzer:
         # Set confidence level
         if key != '': key += ' '
         match_name = app_type + ' ' + key + pattern.string
-        
+
         detected_tech.confidence[match_name] = pattern.confidence
 
         # Dectect version number
@@ -471,15 +514,15 @@ class Wappalyzer:
 
         return CmpToKey
 
-def analyze(url:str, 
-            update:bool=False, 
+def analyze(url:str,
+            update:bool=False,
             useragent:str=None,
             timeout:int=10,
             verify:bool=True) -> Dict[str, Dict[str, Any]]:
     """
-    Quick utility method to analyze a website with minimal configurable options. 
+    Quick utility method to analyze a website with minimal configurable options.
 
-    :See: `WebPage` and `Wappalyzer`. 
+    :See: `WebPage` and `Wappalyzer`.
 
     :Parameters:
         - `url`: URL
@@ -487,9 +530,9 @@ def analyze(url:str,
         - `useragent`: Request user agent
         - `timeout`: Request timeout
         - `verify`: SSL cert verify
-    
-    :Return: 
-        `dict`. Just as `Wappalyzer.analyze_with_versions_and_categories`. 
+
+    :Return:
+        `dict`. Just as `Wappalyzer.analyze_with_versions_and_categories`.
     :Note: More information might be added to the returned values in the future
     """
     # Create Wappalyzer
@@ -498,9 +541,9 @@ def analyze(url:str,
     headers={}
     if useragent:
         headers['User-Agent'] = useragent
-    webpage=WebPage.new_from_url(url, 
-        headers=headers, 
-        timeout=timeout, 
+    webpage=WebPage.new_from_url(url,
+        headers=headers,
+        timeout=timeout,
         verify=verify)
     # Analyze
     results = wappalyzer.analyze_with_versions_and_categories(webpage)
