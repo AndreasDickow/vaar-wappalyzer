@@ -394,8 +394,11 @@ class Wappalyzer:
 
         for app_name in detected_apps:
             versions = self.get_versions(webpage.url, app_name)
-            versioned_apps[app_name] = {"versions": versions}
-
+            if 'cpe' in app_name.keys():
+                versioned_apps[app_name] = {"versions": versions, "description": app_name.description, "cpe": app_name.cpe}
+            else:
+                versioned_apps[app_name] = {"versions": versions, "description": app_name.description}
+                
         return versioned_apps
 
     def analyze_with_categories(self, webpage:IWebPage) -> Dict[str, Dict[str, Any]]:
