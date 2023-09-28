@@ -99,6 +99,11 @@ class Wappalyzer:
         elif update:
             should_update = True
             _technologies_file: pathlib.Path
+
+            _category_file: pathlib.Path
+            _files = cls._find_files(['HOME', 'APPDATA',], ['.python-Wappalyzer/categories.json'])
+            if _files:
+                _category_file = pathlib.Path(_files[0])
             _files = cls._find_files(['HOME', 'APPDATA',], ['.python-Wappalyzer/technologies.json'])
             if _files:
                 _technologies_file = pathlib.Path(_files[0])
@@ -109,11 +114,13 @@ class Wappalyzer:
             # Get the lastest file
             if should_update:
                 try:
-                    cats = requests.get('https://github.com/HTTPArchive/wappalyzer/tree/main/src/categories.json').json()
+                    with _category_file.open('r', encoding='utf-8') as cfile:
+                            cats = json.load(cfile)
                     techs: Dict[str, Any] = {}
                     for _ in '_abcdefghijklmnopqrstuvwxyz':
-                        r = requests.get(f'https://github.com/HTTPArchive/wappalyzer/tree/main/src/technologies/{_}.json')
-                        techs = {**techs, **r.json()}
+                        with _technologies_file.open('r', encoding='utf-8') as tfile:
+                            tech = json.load(tfile)
+                            techs = {**techs, **tech}
                     obj = {'categories': cats, 'technologies': techs}
                     needed_categories = defaultobj['categories'].keys()
                     categories = {}
