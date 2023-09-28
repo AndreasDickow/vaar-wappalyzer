@@ -92,69 +92,51 @@ class Wappalyzer:
         """
         default=pkg_resources.resource_string(__name__, "data/technologies.json")
         defaultobj = json.loads(default)
+        defaultc=pkg_resources.resource_string(__name__, "data/categories.json")
+        cats = json.loads(defaultc)
 
         if technologies_file:
             with open(technologies_file, 'r', encoding='utf-8') as fd:
                 obj = json.load(fd)
         elif update:
-            should_update = True
-            _technologies_file: pathlib.Path
 
-            _category_file: pathlib.Path
-            _files = cls._find_files(['HOME', 'APPDATA',], ['.python-Wappalyzer/categories.json'])
-            if _files:
-                _category_file = pathlib.Path(_files[0])
-            _files = cls._find_files(['HOME', 'APPDATA',], ['.python-Wappalyzer/technologies.json'])
-            if _files:
-                _technologies_file = pathlib.Path(_files[0])
-                last_modification_time = datetime.fromtimestamp(_technologies_file.stat().st_mtime)
-                if datetime.now() - last_modification_time < timedelta(hours=24):
-                    should_update = False
+            try:
 
-            # Get the lastest file
-            if should_update:
-                try:
-                    with _category_file.open('r', encoding='utf-8') as cfile:
-                            cats = json.load(cfile)
-                    techs: Dict[str, Any] = {}
-                    for _ in '_abcdefghijklmnopqrstuvwxyz':
-                        with _technologies_file.open('r', encoding='utf-8') as tfile:
-                            tech = json.load(tfile)
-                            techs = {**techs, **tech}
-                    obj = {'categories': cats, 'technologies': techs}
-                    needed_categories = defaultobj['categories'].keys()
-                    categories = {}
-                    for category_id in needed_categories:
-                        categories[category_id] = obj['categories'][str(category_id)]
+                techs: Dict[str, Any] = {}
+                for name in '_abcdefghijklmnopqrstuvwxyz':
+                    tfile = pkg_resources.resource_string(__name__, "data/%s.json"%name)
+                    tech = json.load(tfile)
+                    techs = {**techs, **tech}
+                obj = {'categories': cats, 'technologies': techs}
+                needed_categories = defaultobj['categories'].keys()
+                categories = {}
+                for category_id in needed_categories:
+                    categories[category_id] = obj['categories'][str(category_id)]
 
-                    technologies = {}
-                    for key in obj['technologies']:
-                        intersection = set(obj['technologies'][key]['cats']).intersection(set(needed_categories))
-                        if len(intersection):
-                            technologies[key] = obj['technologies'][key]
-                    obj = {'categories': categories, 'technologies': technologies}
+                technologies = {}
+                for key in obj['technologies']:
+                    intersection = set(obj['technologies'][key]['cats']).intersection(set(needed_categories))
+                    if len(intersection):
+                        technologies[key] = obj['technologies'][key]
+                obj = {'categories': categories, 'technologies': technologies}
 
 
-                    _technologies_file = pathlib.Path(cls._find_files(
-                        ['HOME', 'APPDATA',],
-                        ['.python-Wappalyzer/technologies.json'],
-                        create = True
-                        ).pop())
+                _technologies_file = pathlib.Path(cls._find_files(
+                    ['HOME', 'APPDATA',],
+                    ['.python-Wappalyzer/technologies.json'],
+                    create = True
+                    ).pop())
 
-                    if obj != defaultobj:
-                        with _technologies_file.open('w', encoding='utf-8') as tfile:
-                            tfile.write(json.dumps(obj, indent=2))
-                        logger.info("python-Wappalyzer technologies.json file updated")
+                if obj != defaultobj:
+                    with _technologies_file.open('w', encoding='utf-8') as tfile:
+                        tfile.write(json.dumps(obj, indent=2))
+                    logger.info("python-Wappalyzer technologies.json file updated")
 
-                except Exception as err: # Or loads default
-                    logger.error("Could not download latest Wappalyzer technologies.json file because of error : '{}'. Using default. ".format(err))
-                    obj = defaultobj
+            except Exception as err: # Or loads default
+                logger.error("Could not download latest Wappalyzer technologies.json file because of error : '{}'. Using default. ".format(err))
+                obj = defaultobj
             else:
-                logger.debug("python-Wappalyzer technologies.json file not updated because already updated in the last 24h")
-                with _technologies_file.open('r', encoding='utf-8') as tfile:
-                    obj = json.load(tfile)
 
-            logger.info("Using technologies.json file at {}".format(_technologies_file.as_posix()))
         else:
             obj = defaultobj
 
