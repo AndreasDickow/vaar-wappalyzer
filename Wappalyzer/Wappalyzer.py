@@ -68,29 +68,6 @@ class Wappalyzer:
 
         self._confidence_regexp = re.compile(r"(.+)\\;confidence:(\d+)")
 
-    def get_latest_tech_data(self) -> Dict[str, Any]:
-        cats = requests.get('https://github.com/HTTPArchive/wappalyzer/tree/main/src/categories.json').json()
-        techs: Dict[str, Any] = {}
-        for _ in '_abcdefghijklmnopqrstuvwxyz':
-            r = requests.get(f'https://github.com/HTTPArchive/wappalyzer/tree/main/src/technologies/{_}.json')
-            techs = {**techs, **r.json()}
-        obj = {'categories': cats, 'technologies': techs}
-        obj = self.__filter_needed_data(obj)
-        return obj
-
-    def __filter_needed_data(self, data) -> Dict[str, Any]:
-        needed_categories = range(1,75)
-
-        categories = {}
-        for category_id in needed_categories:
-            categories[category_id] = data['categories'][str(category_id)]
-
-        technologies = {}
-        for key in data['technologies']:
-            intersection = set(data['technologies'][key]['cats']).intersection(set(needed_categories))
-            if len(intersection):
-                technologies[key] = data['technologies'][key]
-        obj = {'categories': categories, 'technologies': technologies}
 
 
     @classmethod
@@ -138,8 +115,7 @@ class Wappalyzer:
                         r = requests.get(f'https://github.com/HTTPArchive/wappalyzer/tree/main/src/technologies/{_}.json')
                         techs = {**techs, **r.json()}
                     obj = {'categories': cats, 'technologies': techs}
-                    needed_categories = range(1,75)
-
+                    needed_categories = defaultobj['categories'].keys()
                     categories = {}
                     for category_id in needed_categories:
                         categories[category_id] = obj['categories'][str(category_id)]
