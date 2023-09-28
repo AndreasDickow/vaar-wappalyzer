@@ -105,7 +105,8 @@ class Wappalyzer:
                 techs: Dict[str, Any] = {}
                 for name in '_abcdefghijklmnopqrstuvwxyz':
                     tfile = pkg_resources.resource_string(__name__, "data/%s.json"%name)
-                    tech = json.load(tfile)
+
+                    tech = json.loads(tfile)
                     techs = {**techs, **tech}
                 obj = {'categories': cats, 'technologies': techs}
                 needed_categories = cats.keys()
@@ -113,12 +114,7 @@ class Wappalyzer:
                 for category_id in needed_categories:
                     categories[category_id] = obj['categories'][str(category_id)]
 
-                technologies = {}
-                for key in obj['technologies']:
-                    intersection = set(obj['technologies'][key]['cats']).intersection(set(needed_categories))
-                    if len(intersection):
-                        technologies[key] = obj['technologies'][key]
-                obj = {'categories': categories, 'technologies': technologies}
+
 
 
                 _technologies_file = pathlib.Path(cls._find_files(
@@ -133,9 +129,11 @@ class Wappalyzer:
                     logger.info("python-Wappalyzer technologies.json file updated")
 
             except Exception as err: # Or loads default
+                import traceback
+                traceback.print_exc()
                 logger.error("Could not download latest Wappalyzer technologies.json file because of error : '{}'. Using default. ".format(err))
                 obj = defaultobj
-            else:
+
 
         else:
             obj = defaultobj
@@ -239,7 +237,7 @@ class Wappalyzer:
                 if selector.attributes:
                     for attrname, patterns in list(selector.attributes.items()):
                         _content = item.attributes.get(attrname)
-                        if _content:
+                        if isinstance(_content, str) or type(_content) == int:
                             for pattern in patterns:
                                 if pattern.regex.search(_content):
                                     self._set_detected_app(webpage.url, tech_fingerprint, 'dom', pattern, value=_content)
