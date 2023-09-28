@@ -225,7 +225,8 @@ class Wappalyzer:
         #           - "text": "regex": check if the .innerText property of the element that matches the css selector matches the regex (with version extraction).
         #           - "attributes": {dict from attr name to regex}: check if the attribute value of the element that matches the css selector matches the regex (with version extraction).
         for selector in tech_fingerprint.dom:
-            for item in webpage.select(selector.selector):
+
+            for item in webpage.select(selector.selector.split('\;confidence')[0]):
                 if selector.exists:
                     self._set_detected_app(webpage.url, tech_fingerprint, 'dom', Pattern(string=selector.selector), value='')
                     has_tech = True
